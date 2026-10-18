@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sreshta's Money Tree — Save, Spend, Share</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--ink:#2E4A1F;--ink2:#476b2f;--cream:#FFF8E7;--paper:#FFFDF4;--card:#FFFFFF;--green:#588157;--green2:#7FB069;--leaf:#A7C957;--gold:#E9B44C;--goldlt:#F6C453;--bark:#8A5A2B;--bark2:#6E4420;--line:#B9D6A3;--soft:#5F7A4A}
+body{margin:0;font-family:'Nunito',sans-serif;color:var(--ink);background:linear-gradient(180deg,#FFF6DC 0%,#F3F9E4 45%,#E4F2D2 100%);min-height:100dvh;overflow-x:hidden;position:relative}
+h1,h2,h3,.baloo{font-family:'Baloo 2',cursive}
+.scr{display:none;max-width:480px;margin:0 auto;padding:12px 14px 40px;min-height:100dvh;position:relative;z-index:2}
+.scr.on{display:block}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.topbar .tb{background:#fff;border:2px solid var(--line);color:var(--ink2);border-radius:999px;padding:6px 14px;font-weight:800;font-size:14px;cursor:pointer;min-height:44px}
+.topbar .crumb{font-size:13px;font-weight:800;color:var(--soft)}
+.door{text-align:center;padding:8px 0 2px}
+.treeIcon{font-size:42px;line-height:1;filter:drop-shadow(0 3px 6px rgba(88,129,87,.35))}
+h1.title{margin:6px 0 0;font-size:30px;color:var(--green);line-height:1.15}
+.tagline{font-weight:800;color:var(--bark);letter-spacing:.3px;margin:3px 0 8px}
+.gRow{display:flex;gap:12px;align-items:flex-end;margin:8px 0}
+.gWrap{flex:0 0 104px;cursor:pointer;animation:bob 3s ease-in-out infinite;text-align:center}
+.gWrap svg{width:104px;height:auto}
+.gWrap.small{flex-basis:70px;animation:none}
+.gWrap.small svg{width:70px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bubble{position:relative;background:#fff;color:var(--ink);border:3px solid var(--green2);border-radius:22px;padding:12px 14px;font-family:'Baloo 2',cursive;font-size:17px;line-height:1.35;flex:1;box-shadow:0 4px 0 rgba(88,129,87,.25)}
+.bubble:after{content:"";position:absolute;left:-13px;bottom:20px;width:20px;height:20px;background:#fff;border-left:3px solid var(--green2);border-bottom:3px solid var(--green2);transform:rotate(45deg);border-bottom-left-radius:6px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 4px 12px rgba(88,129,87,.14);margin:10px 0;color:var(--ink)}
+.card.green{background:linear-gradient(135deg,#588157,#7FB069);color:#fff;border-color:#588157}
+.card.goldy{background:linear-gradient(135deg,#FFF3D6,#FFE9B8);border-color:var(--gold)}
+.btn{display:block;width:100%;border:none;cursor:pointer;border-radius:999px;padding:13px 16px;font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;background:linear-gradient(180deg,#7FB069,#588157);color:#fff;box-shadow:0 4px 0 #3E5F3D;margin:8px 0;min-height:50px}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #3E5F3D}
+.btn.gold{background:linear-gradient(180deg,#F6C453,#E9B44C);color:#4A3200;box-shadow:0 4px 0 #B9821E}
+.btn.ghost{background:#fff;color:var(--ink2);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.45}
+.entry{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 14px;width:100%;cursor:pointer;font-family:'Baloo 2',cursive;font-size:19px;font-weight:800;color:var(--ink);margin:8px 0;text-align:left;min-height:58px}
+.entry .face{font-size:28px}
+.entry small{display:block;font-family:'Nunito';font-size:12px;color:var(--soft);font-weight:700}
+.pinDots{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.pinDots span{width:18px;height:18px;border-radius:50%;border:3px solid var(--green);background:transparent}
+.pinDots span.f{background:var(--green)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:290px;margin:0 auto}
+.pad button{font-family:'Baloo 2';font-size:23px;font-weight:800;padding:12px 0;border-radius:16px;border:2px solid #E4CE8F;background:#FFF6DC;color:#4A3200;cursor:pointer;min-height:54px}
+#pinMsg{text-align:center;font-weight:800;color:#B4710B;min-height:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px}
+.stat .n{font-family:'Baloo 2';font-size:20px;font-weight:800;color:var(--green);line-height:1.12}
+.stat .l{font-size:11.5px;font-weight:800;color:var(--soft);line-height:1.2;margin-top:3px}
+.jarRow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.jarCard{border-radius:16px;padding:10px 6px;text-align:center;border:2px solid var(--line);background:#fff}
+.jarCard .je{font-size:26px}
+.jarCard .jn{font-family:'Baloo 2';font-weight:800;font-size:15px}
+.jarCard .jb{font-family:'Baloo 2';font-weight:800;font-size:19px;color:var(--green)}
+.jarCard.save{background:#EDF7E3}
+.jarCard.spend{background:#FFF3D6}
+.jarCard.share{background:#FDEBEF}
+.mrow{display:flex;align-items:center;gap:11px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px;margin:7px 0;cursor:pointer;width:100%;text-align:left;color:var(--ink);min-height:56px}
+.mrow .no{font-family:'Baloo 2';font-weight:800;background:var(--green2);color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex:0 0 34px;font-size:16px}
+.mrow .mt{font-family:'Baloo 2';font-weight:800;font-size:16.5px;line-height:1.15}
+.mrow .ms{font-size:12px;font-weight:800;color:var(--soft)}
+.mrow.lock{opacity:.6;cursor:default}
+.mrow.done .no{background:var(--gold);color:#4A3200}
+.stageCard{border:2px dashed #B9D6A3;border-radius:16px;padding:10px 12px;margin:7px 0;color:var(--soft);background:rgba(255,255,255,.55)}
+.stageCard .st1{font-family:'Baloo 2';font-weight:800;font-size:16px;color:var(--ink2)}
+.opt{display:block;width:100%;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:12px;font-family:'Baloo 2';font-weight:800;font-size:16px;margin:7px 0;cursor:pointer;text-align:left;min-height:50px}
+.opt.pick{background:var(--green2);border-color:var(--green);color:#fff}
+.opt.wig{animation:wig .35s ease}
+@keyframes wig{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
+textarea,input[type=text],input[type=number],input[type=password],select{width:100%;border-radius:14px;border:2.5px solid var(--line);background:#FFFDF6;color:var(--ink);font-family:'Nunito';font-weight:700;font-size:16px;padding:11px;margin:6px 0}
+.revRow{display:flex;gap:7px;margin:6px 0 12px}
+.revRow button{flex:1;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--ink2);font-family:'Baloo 2';font-weight:800;font-size:14.5px;padding:10px 4px;cursor:pointer;min-height:48px}
+.revRow button.sel{background:var(--gold);color:#4A3200;border-color:var(--gold)}
+.dashNav{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.dashNav button{border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--ink2);font-family:'Baloo 2';font-weight:800;font-size:14px;padding:9px 14px;cursor:pointer;min-height:46px}
+.dashNav button.sel{background:var(--green);color:#fff;border-color:var(--green)}
+.hidden{display:none!important}
+.cele{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.foot{font-size:12px;color:var(--soft);font-weight:700;text-align:center;margin-top:14px;line-height:1.5}
+.stepTag{font-size:12px;font-weight:800;letter-spacing:1.2px;color:#B4710B}
+.treeCard{background:linear-gradient(180deg,#FFFDF4,#EFF8DF);border:2px solid var(--line);border-radius:22px;padding:10px 8px 4px;margin:10px 0;box-shadow:0 4px 12px rgba(88,129,87,.14);text-align:center}
+.leafRow{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;min-height:26px;margin:4px 0}
+.leafRow span{font-size:19px}
+.ledRow{display:flex;justify-content:space-between;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;margin:6px 0;font-size:14px;font-weight:700}
+.ledRow .amt{font-family:'Baloo 2';font-weight:800;white-space:nowrap}
+.ledRow .fixBtn{border:2px solid var(--line);background:#FFF6DC;border-radius:999px;font-family:'Baloo 2';font-weight:800;font-size:12.5px;padding:5px 11px;cursor:pointer;min-height:36px;color:#7A5410}
+.coin{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-family:'Baloo 2';font-weight:800;border:3px solid #C79A2E;background:radial-gradient(circle at 35% 30%,#FFEFB0,#F6C453);color:#6B4A00;margin:3px}
+.note{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;font-family:'Baloo 2';font-weight:800;border:2.5px solid #7FB069;background:linear-gradient(135deg,#EAF6DC,#CFE8B8);color:#2E4A1F;margin:3px;padding:6px 12px}
+.goldTag{display:inline-block;background:#FFF3D6;border:2px solid var(--gold);color:#7A5410;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
+</style>
+<style>#islandBackBtn{position:fixed;bottom:calc(env(safe-area-inset-bottom, 0px) + 10px);left:10px;z-index:2147483000;background:#3B1163;border:1.5px solid rgba(255,201,77,.85);color:#F3DFA7;border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;line-height:1;text-decoration:none;box-shadow:0 4px 14px rgba(10,2,28,.45);min-height:44px;display:inline-flex;align-items:center;box-sizing:border-box}</style>
+</head>
+<body>
+
+<section class="scr" id="scr-access">
+  <div class="door">
+    <div class="treeIcon">🌳</div>
+    <h1 class="title">Sreshta's Money Tree</h1>
+    <div class="tagline">Save • Spend • Share 🌰</div>
+  </div>
+  <div class="gRow">
+    <div class="gWrap" id="accessGusti"></div>
+    <div class="bubble">Hello, Sreshta! I am Gusti. A little nut today is a big tree tomorrow. Shall we grow your Money Tree?</div>
+  </div>
+  <button class="entry" onclick="openPin('child')"><span class="face">🌰</span><span>Sreshta<small>Tap to visit your Money Tree</small></span></button>
+  <button class="entry" onclick="openPin('parent')"><span class="face">🔑</span><span>Parents<small>Mom &amp; Dad — dashboard</small></span></button>
+  <p class="foot">Money is a tool for a happy life — save for security, spend with joy, share with love.</p>
+</section>
+
+<section class="scr" id="scr-pin">
+  <div class="topbar"><button class="tb" onclick="show('scr-access')">← Back</button><span class="crumb">Secret PIN</span></div>
+  <h2 class="baloo" id="pinTitle" style="text-align:center;color:var(--green)">PIN</h2>
+  <div class="pinDots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+  <div id="pinMsg"></div>
+  <div class="pad">
+    <button onclick="pinKey('1')">1</button><button onclick="pinKey('2')">2</button><button onclick="pinKey('3')">3</button>
+    <button onclick="pinKey('4')">4</button><button onclick="pinKey('5')">5</button><button onclick="pinKey('6')">6</button>
+    <button onclick="pinKey('7')">7</button><button onclick="pinKey('8')">8</button><button onclick="pinKey('9')">9</button>
+    <button onclick="pinKey('C')">C</button><button onclick="pinKey('0')">0</button><button onclick="pinKey('⌫')">⌫</button>
+  </div>
+</section>
+
+<section class="scr" id="scr-base">
+  <div class="topbar"><button class="tb" onclick="goHome()">← My Tree</button><span class="crumb">Day 1 — My First Money Day</span></div>
+  <div id="baseBody"></div>
+</section>
+
+<section class="scr" id="scr-home">
+  <div class="door" style="padding-top:2px">
+    <div class="treeIcon" style="font-size:34px">🌳</div>
+    <h1 class="title" style="font-size:26px">The Money Tree</h1>
+  </div>
+  <div class="gRow">
+    <div class="gWrap" id="homeGusti" onclick="tapGusti()"></div>
+    <div class="bubble" id="homeBubble">Welcome to your Money Tree, Sreshta!</div>
+  </div>
+  <div id="homeBody"></div>
+</section>
+
+<section class="scr" id="scr-mission">
+  <div class="topbar"><button class="tb" onclick="leaveMission()">← My Tree</button><span class="crumb" id="missionCrumb">Mission</span></div>
+  <div id="missionBody"></div>
+</section>
+
+<section class="scr" id="scr-book">
+  <div class="topbar"><button class="tb" onclick="goHome()">← My Tree</button><span class="crumb">My Money Book</span></div>
+  <div id="bookBody"></div>
+</section>
+
+<section class="scr" id="scr-dash">
+  <div class="topbar"><button class="tb" onclick="show('scr-access')">← Exit</button><span class="crumb">Parents — Money Tree Dashboard</span></div>
+  <div class="dashNav">
+    <button data-d="ov" onclick="dashGo('ov')">Overview</button>
+    <button data-d="ledger" onclick="dashGo('ledger')">Jar Ledger</button>
+    <button data-d="goal" onclick="dashGo('goal')">Goal Manager</button>
+    <button data-d="ctrl" onclick="dashGo('ctrl')">Controls</button>
+  </div>
+  <div id="twokBox"></div>
+  <div id="dash-ov"></div><div id="dash-ledger"></div><div id="dash-goal"></div><div id="dash-ctrl"></div>
+  <p class="foot">The Money Tree keeps everything on this device only — jars, goals and the ledger live here, not in any cloud. Amounts are always typed by a parent; the tree only adds them up.</p>
+</section>
+
+<a id="islandBackBtn" href="https://raghuramsuda-sys.github.io/sreshta-universe/" aria-label="Back to Starlight Island dashboard">&#8592; Island</a>
+<script>(function(){var b=document.getElementById("islandBackBtn");if(!b)return;function upd(){var on=document.querySelector(".scr.on");var show=!on||on.id==="scr-access"||on.id==="scr-home";b.style.display=show?"inline-flex":"none";}upd();new MutationObserver(upd).observe(document.documentElement,{attributes:true,attributeFilter:["class"],subtree:true});})();</script>
+<script>
+"use strict";
+/* ================= HELPERS ================= */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const rs = (n) => "₹" + Number(n || 0).toLocaleString("en-IN");
+const todayISO = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+const monthKey = () => todayISO().slice(0, 7);
+
+/* ================= GUSTI THE SQUIRREL ================= */
+const GUSTI_SVG = `<svg viewBox="0 0 150 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gusti the squirrel">
+  <path d="M104,112 C138,106 148,58 128,30 C114,10 92,14 98,36 C102,52 94,66 84,78 C74,90 80,116 104,112 Z" fill="#A5672F" stroke="#7A4A1D" stroke-width="3"/>
+  <path d="M112,100 C130,94 136,62 124,40" fill="none" stroke="#C98B45" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+  <ellipse cx="64" cy="94" rx="27" ry="24" fill="#C07F3E"/>
+  <ellipse cx="57" cy="98" rx="14" ry="16" fill="#FBEED3"/>
+  <path d="M36,34 L32,12 L46,24 Z" fill="#C07F3E" stroke="#7A4A1D" stroke-width="2"/>
+  <path d="M58,28 L62,6 L70,22 Z" fill="#C07F3E" stroke="#7A4A1D" stroke-width="2"/>
+  <circle cx="48" cy="46" r="21" fill="#C07F3E"/>
+  <ellipse cx="42" cy="56" rx="10" ry="7" fill="#FBEED3"/>
+  <circle cx="41" cy="42" r="3.6" fill="#2B1A08"/>
+  <circle cx="42.4" cy="40.6" r="1.3" fill="#fff"/>
+  <ellipse cx="33" cy="54" rx="2.6" ry="1.8" fill="#5B3413"/>
+  <path d="M38,60 Q44,64 50,60" fill="none" stroke="#5B3413" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="72" cy="86" rx="7" ry="5" fill="#A5672F" transform="rotate(-24 72 86)"/>
+  <g>
+    <ellipse cx="80" cy="92" rx="8.5" ry="10.5" fill="#8A5A2B"/>
+    <path d="M71.5,88 a8.5,6 0 0 1 17,0 Z" fill="#5B3A16"/>
+    <rect x="78" y="79" width="3.4" height="5" rx="1.6" fill="#5B3A16"/>
+  </g>
+  <ellipse cx="44" cy="116" rx="11" ry="5" fill="#A5672F"/>
+  <ellipse cx="80" cy="116" rx="11" ry="5" fill="#A5672F"/>
+</svg>`;
+
+/* ================= DATA ================= */
+const FESTIVALS = [
+  { name: "Dussehra", date: "2026-10-20" },
+  { name: "Diwali", date: "2026-11-08" },
+  { name: "Sreshta's Birthday", date: "2027-10-02" }
+];
+function festivalSoon() {
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  for (const f of FESTIVALS) {
+    const d = new Date(f.date + "T00:00:00");
+    const diff = Math.round((d - now) / 86400000);
+    if (diff >= 0 && diff <= 14) return { name: f.name, diff };
+  }
+  return null;
+}
+
+const B3 = [
+  { q: "A packet of your favourite chips costs about…", opts: ["₹5", "₹10", "₹60"], a: 1 },
+  { q: "A new notebook for school costs about…", opts: ["₹10", "₹40", "₹200"], a: 1 },
+  { q: "One ride on a city bus costs about…", opts: ["₹15", "₹150", "₹500"], a: 0 },
+  { q: "One pencil costs about…", opts: ["₹50", "₹25", "₹5"], a: 2 },
+  { q: "One banana costs about…", opts: ["₹60", "₹10", "₹120"], a: 1 },
+  { q: "A small juice box costs about…", opts: ["₹5", "₹90", "₹20"], a: 2 }
+];
+
+const R = (q, opts, a) => ({ q, opts, a });
+const MISSIONS = [
+  { id: "m1", title: "Meet Your Jars",
+    story: ["Gusti found three shiny jars under the tree.", "“One for my goal, one for little joys, one for sharing,” she said.", "She put her very first acorn in the goal jar and smiled."],
+    idea: "Save first, then enjoy what's left.",
+    gameTitle: "Jar Sort — which jar does it go to?",
+    rounds: [
+      R("Money I am keeping for my goal book", ["Save jar", "Spend jar", "Share jar"], 0),
+      R("A coin for an ice cream today", ["Save jar", "Spend jar", "Share jar"], 1),
+      R("A coin to buy a card for my friend", ["Save jar", "Spend jar", "Share jar"], 2),
+      R("Money for a rainy day", ["Save jar", "Spend jar", "Share jar"], 0),
+      R("A coin for a yummy snack right now", ["Save jar", "Spend jar", "Share jar"], 1),
+      R("A coin to help someone in need", ["Save jar", "Spend jar", "Share jar"], 2)
+    ],
+    task: "Look at your three real jars at home. Say each jar's name out loud and what it is for.",
+    jar: "none" },
+  { id: "m2", title: "Coins of Our Land",
+    story: ["Gusti rolled a shiny coin down the path.", "“Coins are small, but they add up,” she laughed.", "She lined up every coin she owned, big and small."],
+    idea: "Small coins count — every coin is real money.",
+    gameTitle: "Tap the coin Gusti asks for",
+    rounds: [
+      R("Tap the ₹5 coin", ["₹1", "₹5", "₹2"], 1),
+      R("Tap the ₹10 coin", ["₹10", "₹2", "₹5"], 0),
+      R("Tap the ₹2 coin", ["₹5", "₹10", "₹2"], 2),
+      R("Tap the ₹1 coin", ["₹2", "₹1", "₹10"], 1)
+    ],
+    task: "Find real coins at home with Mom. Hold each one and say its value.",
+    jar: "none" },
+  { id: "m3", title: "Notes & Big Values",
+    story: ["A big leaf fell on Gusti's head. It looked like a note!", "“Notes hold bigger values,” she said.", "“They need extra care — just like big dreams.”"],
+    idea: "Notes carry bigger values than coins.",
+    gameTitle: "Which note is worth more?",
+    rounds: [
+      R("Which is worth more?", ["₹10 note", "₹50 note"], 1),
+      R("Which is worth more?", ["₹100 note", "₹20 note"], 0),
+      R("Which is worth more?", ["₹50 note", "₹200 note"], 1),
+      R("Which is worth more?", ["₹500 note", "₹100 note"], 0),
+      R("Which is worth more?", ["₹20 note", "₹10 note"], 0)
+    ],
+    task: "With Mom, look at a real note. Find its number in two corners.",
+    jar: "none" },
+  { id: "m4", title: "Money Comes From Work",
+    story: ["Gusti watched the baker, the driver and the teacher.", "“Everyone helps others — and earns for their work,” she said.", "Money is a thank-you for work done well."],
+    idea: "Money is earned by work that helps people.",
+    gameTitle: "Who earns for this work?",
+    rounds: [
+      R("Who gets paid for cutting hair?", ["A barber", "A pilot", "A baker"], 0),
+      R("Who gets paid for teaching children?", ["A driver", "A teacher", "A farmer"], 1),
+      R("Who gets paid for growing vegetables?", ["A doctor", "A tailor", "A farmer"], 2),
+      R("Who gets paid for stitching clothes?", ["A tailor", "A barber", "A teacher"], 0)
+    ],
+    task: "Ask Mom or Dad: “What work do you do?” Listen to the full answer — it matters.",
+    jar: "none" },
+  { id: "m5", title: "Count My Treasure Again",
+    story: ["It was Counting Day under the tree.", "Gusti emptied her hollow and counted every acorn, slowly.", "“Knowing my number makes my goal real,” she said."],
+    idea: "Count your jar often — knowing your number is power.",
+    gameTitle: "Add the coins — what is the total?",
+    rounds: [
+      R("₹5 + ₹2 + ₹1 = ?", ["₹7", "₹8", "₹10"], 1),
+      R("₹10 + ₹5 = ?", ["₹15", "₹20", "₹12"], 0),
+      R("₹2 + ₹2 + ₹1 = ?", ["₹4", "₹6", "₹5"], 2),
+      R("₹10 + ₹10 + ₹5 = ?", ["₹20", "₹25", "₹30"], 1)
+    ],
+    task: "Count the real coins in your Save jar with Mom. Say the total out loud, proudly.",
+    jar: "count" },
+  { id: "m6", title: "What Things Cost — Home",
+    story: ["Gusti peeked into a kitchen basket.", "“Every home has things that cost money,” she said.", "“Good savers know the prices of their own home.”"],
+    idea: "Knowing prices at home makes you money-wise.",
+    gameTitle: "Guess the price — home things",
+    rounds: [
+      R("A loaf of bread costs about…", ["₹5", "₹30", "₹150"], 1),
+      R("A bar of soap costs about…", ["₹25", "₹90", "₹8"], 0),
+      R("A packet of biscuits costs about…", ["₹60", "₹40", "₹10"], 2),
+      R("A school notebook costs about…", ["₹15", "₹40", "₹120"], 1)
+    ],
+    task: "Pick one thing at home and ask Mom what it costs. Were you close?",
+    jar: "none" },
+  { id: "m7", title: "What Things Cost — Shop",
+    story: ["At the little shop, Gusti read every price tag.", "“Prices are not secret,” she chirped.", "“They are signs that help us choose.”"],
+    idea: "Reading prices helps us choose well.",
+    gameTitle: "Guess the price — shop things",
+    rounds: [
+      R("One samosa costs about…", ["₹15", "₹70", "₹5"], 0),
+      R("A small juice box costs about…", ["₹60", "₹20", "₹8"], 1),
+      R("A sticker pack costs about…", ["₹10", "₹90", "₹30"], 2),
+      R("One flower costs about…", ["₹45", "₹10", "₹100"], 1)
+    ],
+    task: "On your next shop visit with Mom, read one price tag out loud yourself.",
+    jar: "none" },
+  { id: "m8", title: "Needs or Wants? (First Taste)",
+    story: ["Gusti held two acorns. “This one I need for winter.”", "“This shiny one I just want,” she giggled.", "“Needs keep us well. Wants make us smile. Both have a place.”"],
+    idea: "Needs keep us well; wants are treats. Jars help both.",
+    gameTitle: "Need or Want?",
+    rounds: [
+      R("Drinking water", ["Need", "Want"], 0),
+      R("A new toy car", ["Need", "Want"], 1),
+      R("Warm food", ["Need", "Want"], 0),
+      R("An extra hair clip", ["Need", "Want"], 1),
+      R("Shoes that fit", ["Need", "Want"], 0),
+      R("A third ice cream", ["Need", "Want"], 1)
+    ],
+    task: "At home, point at two things: one you need, one you want. Tell Mom why.",
+    jar: "none" },
+  { id: "m9", title: "My Money Book",
+    story: ["Gusti made a little book from dry leaves.", "“My jars, my goal, my orchard — all in one book,” she said.", "“A Money Book is a mirror for my money.”"],
+    idea: "Your Money Book shows your whole money world in one place.",
+    gameTitle: "Find it in your Money Book",
+    rounds: [
+      R("Where do you see how much is in each jar?", ["My Jars", "The Wish Branch", "The Orchard"], 0),
+      R("Where does a finished goal go to live?", ["The Spend jar", "The Orchard", "Under the tree"], 1),
+      R("Where do wishes wait for 7 days?", ["The hollow", "The Money Book desk", "The Wish Branch"], 2)
+    ],
+    task: "Open My Money Book from home and show Mom your goal fruit progress.",
+    jar: "none" },
+  { id: "m10", title: "Gusti's Tree Tour",
+    story: ["Gusti climbed to the very top of the Money Tree.", "“Hollow, fruit, wishes, rainy branch — I know my whole tree!”", "“And Stage 1 is complete. What a money-wise squirrel — and girl!”"],
+    idea: "You know your tree. You are a Jar Keeper now.",
+    gameTitle: "Tree Tour — tap the part Gusti names",
+    rounds: [
+      R("Tap: The Hollow (where savings live)", ["Rainy-Day Branch", "The Hollow", "Goal Fruit"], 1),
+      R("Tap: The Goal Fruit (what you are saving for)", ["Goal Fruit", "Wish Branch", "The Hollow"], 0),
+      R("Tap: The Wish Branch (where wishes wait)", ["The Orchard", "Counting Leaves", "The Wish Branch"], 2),
+      R("Tap: The Rainy-Day Branch (for surprises)", ["Goal Fruit", "Rainy-Day Branch", "The Hollow"], 1)
+    ],
+    task: "Show Mom the tree on screen and name every part yourself — you are the guide today!",
+    jar: "none" }
+];
+const STAGE_PREVIEWS = [
+  { n: 2, name: "NEEDS & WANTS", titles: ["Need It or Want It?", "The Wish Branch", "7-Day Waiting Game", "Wants That Fade", "Ads Want My Wants", "The Toy Shelf Test", "Free Joys List", "Birthday Wish Planning", "Choose One, Leave One", "My True Wishes"] },
+  { n: 3, name: "SAVE FIRST", titles: ["Jars First!", "My First Goal", "Watch the Hollow Fill", "Earned or Gifted?", "Small Helps, Small Earnings", "Festival Money Plan", "The Rainy-Day Nut", "Counting Day Ritual", "Almost There...", "GOAL DAY!"] },
+  { n: 4, name: "SPEND SMART", titles: ["My Spend Jar, My Choice", "Make the List First", "Two Shops, Two Prices", "Check the Bill", "Big Price, Small Price", "Save or Spend? You Decide", "The Broken Toy Choice", "Treat Myself Day", "Price Detective at a Real Shop", "My First Budget"] },
+  { n: 5, name: "SHARE & GROW", titles: ["The Share Jar Opens", "A Gift From My Jar", "Helping Without Money", "Thank-You Notes & Gratitude", "Where Grown-Ups Keep Savings", "The Tree Bonus Surprise", "My Orchard Tour", "Teach Gusti", "My Money Story", "Happy Money Hero Day"] }
+];
+const GUSTI_TAPS = [
+  "A little nut today is a big tree tomorrow.",
+  "Jars first, then joy.",
+  "You waited. That's a strong heart.",
+  "Your earned acorns shine the brightest, Sreshta.",
+  "Counting Day soon? I love Counting Day!",
+  "Spend with joy, save with pride, share with love."
+];
+
+/* ================= STATE ================= */
+const LS_KEY = "moneytree_v1";
+function freshState() {
+  return {
+    v: 1, baseline: null,
+    jars: { save: 0, spend: 0, share: 0 },
+    earnedSave: 0, giftedSave: 0, rainySaved: 0, rainyTarget: 0,
+    ledger: [], goal: null, orchard: [], wishes: [],
+    done: [], stars: 0, leaves: 0, ticks: {},
+    split: { save: 50, spend: 30, share: 20 },
+    bonus: { on: false, rate: 10, lastMonth: "" },
+    nextReward: "", earnTasks: [], missionProg: null, lastCountDay: ""
+  };
+}
+let S = freshState();
+try { const raw = localStorage.getItem(LS_KEY); if (raw) { const p = JSON.parse(raw); if (p && p.v === 1) { const f = freshState(); Object.assign(f, p); S = f; } } } catch (e) {}
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ================= THE SPLIT (pure) ================= */
+function splitAmount(amount, split) {
+  amount = Math.max(0, Math.floor(Number(amount) || 0));
+  const spend = Math.floor(amount * split.spend / 100);
+  const share = Math.floor(amount * split.share / 100);
+  const savePart = amount - spend - share;
+  return { save: savePart, spend, share };
+}
+
+/* ================= NAV + PIN ================= */
+function show(id) { $$(".scr").forEach(x => x.classList.toggle("on", x.id === id)); window.scrollTo(0, 0); }
+function goHome() { renderHome(); show("scr-home"); }
+let pinRole = "child", pinBuf = "", pendingDash = "";
+function openPin(role) { pinRole = role; pinBuf = ""; $("#pinMsg").textContent = ""; $("#pinTitle").textContent = role === "child" ? "Sreshta's PIN" : "Parents' PIN"; drawDots(); show("scr-pin"); }
+function drawDots() { $$("#pinDots span").forEach((s, i) => s.classList.toggle("f", i < pinBuf.length)); }
+function pinKey(k) {
+  if (k === "C") pinBuf = "";
+  else if (k === "⌫") pinBuf = pinBuf.slice(0, -1);
+  else if (pinBuf.length < 4) pinBuf += k;
+  drawDots();
+  if (pinBuf.length === 4) {
+    const want = pinRole === "child" ? "2017" : "2208";
+    if (pinBuf === want) {
+      pinBuf = "";
+      if (pinRole === "child") { goHome(); }
+      else { const tgt = pendingDash; pendingDash = ""; renderDash(); if (tgt) dashGo(tgt); show("scr-dash"); }
+    } else {
+      $("#pinMsg").textContent = "That PIN did not match — try again, slowly.";
+      pinBuf = ""; drawDots();
+    }
+  }
+}
+/* ================= THE TREE ================= */
+function acornSVG(x, y, gold) {
+  return `<g transform="translate(${x},${y})"><ellipse cx="0" cy="2" rx="5" ry="6.4" fill="${gold ? "#E9B44C" : "#A7C957"}"/><path d="M-5,0 a5,3.6 0 0 1 10,0 Z" fill="#6E4420"/><rect x="-1" y="-5" width="2" height="3" rx="1" fill="#6E4420"/></g>`;
+}
+function treeSVG() {
+  const saveAmt = S.jars.save;
+  let total = 0, goldN = 0;
+  if (saveAmt > 0) { total = saveAmt >= 400 ? 8 : saveAmt >= 200 ? 6 : saveAmt >= 100 ? 5 : saveAmt >= 50 ? 4 : 3; goldN = Math.round(total * Math.min(1, S.earnedSave / saveAmt)); }
+  const spots = [[148, 138], [160, 146], [172, 138], [154, 156], [166, 156], [148, 122], [172, 122], [160, 130]];
+  let acorns = "";
+  for (let i = 0; i < total; i++) acorns += acornSVG(spots[i][0], spots[i][1], i < goldN);
+  let fruit = "";
+  if (S.goal) {
+    const pct = Math.min(100, Math.floor(100 * saveAmt / Math.max(1, S.goal.price)));
+    const circ = 2 * Math.PI * 21;
+    fruit = `<g><circle cx="238" cy="40" r="21" fill="none" stroke="#DCEBC8" stroke-width="5"/><circle cx="238" cy="40" r="21" fill="none" stroke="#E9B44C" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(circ * pct / 100).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 238 40)"/><circle cx="238" cy="40" r="15" fill="#F6C453" stroke="#B9821E" stroke-width="2"/><text x="238" y="45" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="11" fill="#6B4A00">${pct}%</text><path d="M238,19 q2,-6 8,-7" stroke="#588157" stroke-width="3" fill="none"/></g>`;
+  } else {
+    fruit = `<g opacity="0.55"><circle cx="238" cy="40" r="13" fill="#F6C453" stroke="#B9821E" stroke-width="2"/><path d="M238,27 q2,-6 8,-7" stroke="#588157" stroke-width="3" fill="none"/></g>`;
+  }
+  const wish = S.wishes.length ? `<g><path d="M196,108 q44,4 66,26" stroke="#6E4420" stroke-width="6" fill="none" stroke-linecap="round"/><text x="272" y="146" font-size="15">⭐</text><text x="258" y="128" font-family="Baloo 2" font-weight="800" font-size="11" fill="#7A5410">${S.wishes.length} wish${S.wishes.length > 1 ? "es" : ""}</text></g>` : `<path d="M196,108 q44,4 66,26" stroke="#6E4420" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>`;
+  const rainy = S.rainyTarget > 0 ? `<g><path d="M124,108 q-44,4 -64,26" stroke="#6E4420" stroke-width="6" fill="none" stroke-linecap="round"/><text x="30" y="128" font-family="Baloo 2" font-weight="800" font-size="11" fill="#33608C">rainy ${rs(S.rainySaved)}/${rs(S.rainyTarget)}</text><text x="44" y="148" font-size="14">🌧️</text></g>` : "";
+  return `<svg viewBox="0 0 320 250" style="width:100%;max-width:340px;height:auto" role="img" aria-label="The Money Tree">
+  <ellipse cx="160" cy="238" rx="130" ry="10" fill="#D8EDBE"/>
+  <circle cx="105" cy="72" r="47" fill="#7FB069"/><circle cx="163" cy="46" r="56" fill="#588157"/><circle cx="222" cy="74" r="45" fill="#7FB069"/><circle cx="160" cy="88" r="50" fill="#6FA45E"/>
+  ${fruit}
+  <path d="M146,238 C150,190 148,150 142,118 L178,118 C172,150 170,190 174,238 Z" fill="#8A5A2B"/>
+  <path d="M146,150 C120,140 104,128 96,112" stroke="#6E4420" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M174,138 C196,128 206,118 214,104" stroke="#6E4420" stroke-width="8" fill="none" stroke-linecap="round"/>
+  ${rainy}${wish}
+  <ellipse cx="160" cy="152" rx="25" ry="33" fill="#4A2E12"/>
+  <ellipse cx="160" cy="152" rx="19" ry="27" fill="#5F3C17"/>
+  ${acorns}
+  <text x="196" y="160" font-family="Baloo 2" font-weight="800" font-size="10.5" fill="#8A5A2B">← THE HOLLOW</text>
+</svg>`;
+}
+
+/* ================= HOME ================= */
+let gustiTapIx = 0;
+function tapGusti() { gustiTapIx = (gustiTapIx + 1) % GUSTI_TAPS.length; $("#homeBubble").textContent = GUSTI_TAPS[gustiTapIx]; }
+function goalPct() { if (!S.goal) return 0; return Math.min(100, Math.floor(100 * S.jars.save / Math.max(1, S.goal.price))); }
+function nextMissionIx() { for (let i = 0; i < MISSIONS.length; i++) if (!S.done.includes(MISSIONS[i].id)) return i; return -1; }
+function missionUnlocked(ix) { if (!S.baseline) return false; if (ix === 0) return true; return S.done.includes(MISSIONS[ix - 1].id); }
+function renderHome() {
+  $("#homeGusti").innerHTML = GUSTI_SVG;
+  const nx = nextMissionIx();
+  if (!S.baseline) $("#homeBubble").textContent = "Welcome, Sreshta! Before the missions, we have one special Day 1 — your First Money Day. It takes just a few minutes, with Mom or Dad.";
+  else if (S.missionProg) $("#homeBubble").textContent = "You left a mission in the middle — it is saved right where you stopped. Tap Continue whenever you are ready!";
+  else if (nx === -1) $("#homeBubble").textContent = "Stage 1 is complete, Money Master in the making! Your tree is proud of you, Sreshta.";
+  else $("#homeBubble").textContent = "Jars first, then joy. Your tree grew a little more today, Sreshta.";
+  let h = "";
+  if (S.missionProg) {
+    const m = MISSIONS[S.missionProg.ix];
+    h += `<div class="card goldy cele"><div class="stepTag">SAVED JUST FOR YOU</div><h3 style="margin:4px 0">▶️ Continue: ${esc(m.title)}</h3><div style="font-weight:700">You stopped at Step ${S.missionProg.step} of 7 — nothing is lost.</div><button class="btn gold" onclick="startMission(${S.missionProg.ix})">Continue my mission →</button></div>`;
+  }
+  const fest = festivalSoon();
+  if (fest) h += `<div class="card goldy"><div class="stepTag">🎉 FESTIVAL COMING</div><h3 style="margin:4px 0">${esc(fest.name)}${fest.diff === 0 ? " is today!" : " — in " + fest.diff + " day" + (fest.diff > 1 ? "s" : "")}</h3><div style="font-weight:700">Festival money is coming. Jars first!</div></div>`;
+  h += `<div class="treeCard">${treeSVG()}<div class="leafRow">${S.leaves ? "🌿".repeat(Math.min(24, S.leaves)) + (S.leaves > 24 ? `<span style="font-weight:800;color:var(--green)"> +${S.leaves - 24}</span>` : "") : '<span style="font-size:13px;font-weight:800;color:var(--soft)">Counting Day leaves will grow here 🌿</span>'}</div>`;
+  if (S.goal) h += `<div style="font-weight:800;padding:2px 6px 8px">🎯 Saving for: <b>${esc(S.goal.name)}</b> — ${rs(S.jars.save)} of ${rs(S.goal.price)} (${goalPct()}%)${goalPct() >= 100 ? " — <span style='color:#B4710B'>GOAL DAY is here! 🎉</span>" : ""}</div>`;
+  else h += `<div style="font-weight:800;padding:2px 6px 8px;color:var(--soft)">🎯 No goal yet — Mom or Dad can set Goal 1 in the Parents Dashboard.</div>`;
+  h += `</div>`;
+  h += `<div class="jarRow">
+    <div class="jarCard save"><div class="je">🫙</div><div class="jn">SAVE</div><div class="jb">${rs(S.jars.save)}</div></div>
+    <div class="jarCard spend"><div class="je">🧁</div><div class="jn">SPEND</div><div class="jb">${rs(S.jars.spend)}</div></div>
+    <div class="jarCard share"><div class="je">💝</div><div class="jn">SHARE</div><div class="jb">${rs(S.jars.share)}</div></div>
+  </div>`;
+  h += `<div class="grid3"><div class="stat"><div class="n">${S.done.length} / 10</div><div class="l">MISSIONS DONE</div></div><div class="stat"><div class="n">${S.stars} ⭐</div><div class="l">STARS</div></div><div class="stat"><div class="n">${S.orchard.length} 🌳</div><div class="l">GOALS IN ORCHARD</div></div></div>`;
+  if (!S.baseline) {
+    h += `<div class="card green cele"><h3 style="margin:2px 0">🌟 Day 1 — My First Money Day</h3><div style="font-weight:700">Meet your jars, count your treasure, and play What Things Cost. Missions open right after!</div><button class="btn gold" onclick="startBaseline()">Start Day 1 →</button></div>`;
+  } else if (nx >= 0) {
+    const m = MISSIONS[nx];
+    h += `<div class="card green"><div class="stepTag" style="color:#FFE9B8">TODAY'S MISSION</div><h3 style="margin:3px 0">${nx + 1}. ${esc(m.title)}</h3><button class="btn gold" onclick="startMission(${nx})">Start the mission →</button></div>`;
+  } else {
+    h += `<div class="card green cele"><h3 style="margin:2px 0">🏆 Stage 1 — Know Money: COMPLETE!</h3><div style="font-weight:700">All 10 missions done. Stages 2–5 are growing on the branch below.</div></div>`;
+  }
+  h += `<button class="btn" onclick="openBook()">📖 My Money Book</button>`;
+  h += `<button class="btn gold" onclick="jarsFirst()">🌰 Jars First! (with Mom or Dad)</button>`;
+  if (S.nextReward) h += `<div class="card goldy"><div class="stepTag">🎁 NEXT REWARD</div><div class="baloo" style="font-size:19px;font-weight:800">${esc(S.nextReward)}</div></div>`;
+  h += `<h3 style="margin:14px 0 4px;color:var(--green)">Stage 1 — Know Money</h3>`;
+  if (!S.baseline) h += `<div class="stageCard">🔒 Missions open after Day 1 — My First Money Day.</div>`;
+  MISSIONS.forEach((m, i) => {
+    const dn = S.done.includes(m.id), un = missionUnlocked(i);
+    h += `<button class="mrow ${dn ? "done" : ""} ${un ? "" : "lock"}" ${un ? `onclick="startMission(${i})"` : ""}><span class="no">${dn ? "✓" : i + 1}</span><span><span class="mt">${esc(m.title)}</span><br><span class="ms">${dn ? "Done — tap to play again" : un ? "Tap to start" : "Finish the mission before this one"}</span></span></button>`;
+  });
+  STAGE_PREVIEWS.forEach(st => {
+    h += `<div class="stageCard"><span class="st1">Stage ${st.n} — ${esc(st.name)} 🔒</span><br><span style="font-size:13px;font-weight:700">Growing soon: ${st.titles.map(esc).join(" • ")}</span></div>`;
+  });
+  $("#homeBody").innerHTML = h;
+}
+function jarsFirst() { pendingDash = "ledger"; openPin("parent"); }
+
+/* ================= BASELINE ================= */
+let BSTEP = "b1";
+let baseDraft = { choice: "", note: "", b3: [] };
+function baseStep() { return BSTEP; }
+function startBaseline() {
+  if (S.baseline) { BSTEP = "gold"; }
+  else if (!baseDraft.choice) BSTEP = "b1";
+  renderBase(); show("scr-base");
+}
+function jarsDraw() {
+  const one = (label, color) => `<div style="flex:1;text-align:center"><svg viewBox="0 0 60 74" style="width:64px"><rect x="14" y="6" width="32" height="8" rx="3" fill="#8A5A2B"/><path d="M12,16 h36 v40 a10,10 0 0 1 -10,10 h-16 a10,10 0 0 1 -10,-10 Z" fill="${color}" opacity="0.85"/><ellipse cx="30" cy="48" rx="9" ry="7" fill="#FFF3D6"/><text x="30" y="52" text-anchor="middle" font-size="9" font-family="Baloo 2" font-weight="800" fill="#6B4A00">₹</text></svg><div class="baloo" style="font-weight:800">${label}</div></div>`;
+  return `<div style="display:flex;gap:8px;margin:8px 0">${one("SAVE", "#A7C957")}${one("SPEND", "#F6C453")}${one("SHARE", "#F2A7BB")}</div>`;
+}
+function renderBase() {
+  const el = $("#baseBody");
+  if (BSTEP === "gold" && S.baseline) {
+    el.innerHTML = `<div class="card goldy cele"><h3 style="margin:2px 0">🏆 Day 1 — locked in gold, forever</h3>
+    <div style="font-weight:700;line-height:1.55">Jars: ${S.baseline.choice === "new" ? "set up new on Day 1" : "she already had jars"}${S.baseline.note ? " — “" + esc(S.baseline.note) + "”" : ""}<br>Treasure counted: <b>${rs(S.baseline.treasure)}</b>, split into her jars by the jar rule.<br>What Things Cost: she picked the sensible price in <b>${S.baseline.b3.filter((v, i) => v === B3[i].a).length} of 6</b>.</div>
+    <button class="btn" onclick="goHome()">Back to my tree →</button></div>`;
+    return;
+  }
+  if (BSTEP === "b1") {
+    el.innerHTML = `<div class="gRow"><div class="gWrap small">${GUSTI_SVG}</div><div class="bubble">First, your three real jars! Every money tree starts with jars at home.</div></div>
+    <div class="card"><div class="stepTag">B1 — MEET YOUR JARS</div>${jarsDraw()}
+    <div style="font-weight:700;margin-bottom:6px">Did you set up three jars today, or did you already have jars?</div>
+    <button class="opt ${baseDraft.choice === "new" ? "pick" : ""}" onclick="baseChoose('new')">🫙 We set up new jars today</button>
+    <button class="opt ${baseDraft.choice === "have" ? "pick" : ""}" onclick="baseChoose('have')">🌰 We already have jars</button>
+    <input type="text" id="baseNote" placeholder="A note from Mom or Dad (optional)" value="${esc(baseDraft.note)}">
+    <button class="btn" id="b1Next" onclick="baseB1Done()" ${baseDraft.choice ? "" : "disabled"}>Next — count my treasure →</button></div>`;
+    return;
+  }
+  if (BSTEP === "b2") {
+    const prev = splitAmount(Math.max(0, parseInt(($("#baseTotal") || {}).value, 10) || 0), S.split);
+    el.innerHTML = `<div class="gRow"><div class="gWrap small">${GUSTI_SVG}</div><div class="bubble">Now count EVERY coin and note you own — all of it. That is your treasure, and your starting line!</div></div>
+    <div class="card"><div class="stepTag">B2 — COUNT MY TREASURE</div>
+    <div style="font-weight:700">Mom or Dad, type the total she counted (whole rupees):</div>
+    <input type="number" id="baseTotal" min="0" step="1" placeholder="e.g. 350" oninput="renderBaseTotal()">
+    <div id="baseSplitPreview"></div>
+    <button class="btn" id="b2Btn" onclick="baseTreasureDone()" disabled>Put it in my jars →</button></div>`;
+    return;
+  }
+  // b3
+  let q = "";
+  B3.forEach((item, qi) => {
+    q += `<div style="margin:10px 0"><div style="font-weight:800">${qi + 1}. ${esc(item.q)}</div>` +
+      item.opts.map((o, oi) => `<button class="opt ${baseDraft.b3[qi] === oi ? "pick" : ""}" onclick="baseB3Answer(${qi},${oi})">${esc(o)}</button>`).join("") + `</div>`;
+  });
+  el.innerHTML = `<div class="gRow"><div class="gWrap small">${GUSTI_SVG}</div><div class="bubble">Last game of Day 1! What do things cost in your world? Just guess with your heart — this is not a test.</div></div>
+  <div class="card"><div class="stepTag">B3 — WHAT THINGS COST</div>${q}
+  <button class="btn" id="b3Btn" onclick="baseB3Done()" ${baseDraft.b3.filter(x => x !== undefined).length === 6 ? "" : "disabled"}>Finish Day 1 🏆</button></div>`;
+}
+function renderBaseTotal() {
+  const v = parseInt($("#baseTotal").value, 10);
+  const box = $("#baseSplitPreview"), btn = $("#b2Btn");
+  if (!v || v <= 0) { box.innerHTML = ""; btn.disabled = true; return; }
+  const p = splitAmount(v, S.split);
+  box.innerHTML = `<div class="jarRow"><div class="jarCard save"><div class="jn">SAVE ${S.split.save}%</div><div class="jb">${rs(p.save)}</div></div><div class="jarCard spend"><div class="jn">SPEND ${S.split.spend}%</div><div class="jb">${rs(p.spend)}</div></div><div class="jarCard share"><div class="jn">SHARE ${S.split.share}%</div><div class="jb">${rs(p.share)}</div></div></div>`;
+  btn.disabled = false;
+}
+function baseChoose(c) { baseDraft.choice = c; renderBase(); }
+function baseB1Done() { baseDraft.note = ($("#baseNote") || {}).value || ""; BSTEP = "b2"; renderBase(); }
+function addLedger(jar, amt, kind, tag, note) {
+  S.ledger.push({ id: Date.now() + "_" + Math.floor(Math.random() * 1e6), date: todayISO(), jar, amt, kind, tag: tag || "", note: note || "" });
+}
+function applySplit(amount, kind, tag, note) {
+  const p = splitAmount(amount, S.split);
+  if (p.save) { S.jars.save += p.save; if (tag === "Earned") S.earnedSave += p.save; else if (tag === "Gifted") S.giftedSave += p.save; addLedger("save", p.save, kind, tag, note); }
+  if (p.spend) { S.jars.spend += p.spend; addLedger("spend", p.spend, kind, tag, note); }
+  if (p.share) { S.jars.share += p.share; addLedger("share", p.share, kind, tag, note); }
+  return p;
+}
+function baseTreasureDone() {
+  const v = parseInt($("#baseTotal").value, 10);
+  if (!v || v <= 0) return;
+  applySplit(v, "treasure", "Gifted", "Day 1 treasure — her starting line");
+  if (S.jars.save) { /* treasure save part already tagged Gifted above */ }
+  save(); BSTEP = "b3"; renderBase();
+}
+function baseB3Answer(qi, oi) { baseDraft.b3[qi] = oi; renderBase(); }
+function baseB3Done() {
+  if (baseDraft.b3.filter(x => x !== undefined).length !== 6) return;
+  const tot = S.ledger.filter(e => e.kind === "treasure").reduce((a, e) => a + Math.abs(e.amt), 0);
+  S.baseline = { choice: baseDraft.choice, note: baseDraft.note || "", treasure: tot, b3: baseDraft.b3.slice(), date: todayISO() };
+  save(); BSTEP = "gold"; renderBase();
+}
+/* ================= MISSIONS ================= */
+let M = null; // {ix, step, round, gameDone, taskDone, jarDone, tick}
+function startMission(ix) {
+  if (!missionUnlocked(ix)) return false;
+  if (S.missionProg && S.missionProg.ix === ix) { M = JSON.parse(JSON.stringify(S.missionProg)); }
+  else { M = { ix, step: 1, round: 0, gameDone: false, taskDone: false, jarDone: false, tick: "" }; persistProg(); }
+  renderMission(); show("scr-mission"); return true;
+}
+function persistProg() { if (M) { S.missionProg = { ix: M.ix, step: M.step, round: M.round, gameDone: M.gameDone, taskDone: M.taskDone, jarDone: M.jarDone, tick: M.tick }; save(); } }
+function leaveMission() { persistProg(); goHome(); }
+function missionStep() { return M ? M.step : 0; }
+function mStep(n) {
+  if (!M) return;
+  if (n === 4 && !M.gameDone) n = 3;
+  if (n === 5 && !M.taskDone) n = 4;
+  if (n === 6 && !M.jarDone) n = 5;
+  if (n === 7 && !M.tick) n = 6;
+  M.step = n;
+  if (n === 7) awardMission();
+  persistProg(); renderMission();
+}
+function awardMission() {
+  const m = MISSIONS[M.ix];
+  if (!S.done.includes(m.id)) { S.done.push(m.id); S.stars += 5; save(); }
+}
+function finishMission() { S.missionProg = null; M = null; save(); goHome(); }
+function renderMission() {
+  if (!M) return;
+  const m = MISSIONS[M.ix];
+  $("#missionCrumb").textContent = "Mission " + (M.ix + 1) + " — " + m.title;
+  const names = ["Gusti's Story", "The Big Idea", "Practice Game", "Real-World Task", "Jar Action", "Mom's Tick", "Tree Moment"];
+  let h = `<div class="stepTag">STEP ${M.step} OF 7 — ${names[M.step - 1].toUpperCase()}</div><h2 class="baloo" style="margin:4px 0 6px;color:var(--green)">${M.ix + 1}. ${esc(m.title)}</h2>`;
+  if (M.step === 1) {
+    h += `<div class="gRow"><div class="gWrap small">${GUSTI_SVG}</div><div class="bubble">${esc(m.story[0])}</div></div><div class="card" style="font-weight:700;line-height:1.6">${m.story.slice(1).map(esc).join("<br>")}</div><button class="btn" onclick="mStep(2)">Next — the big idea →</button>`;
+  } else if (M.step === 2) {
+    h += `<div class="card goldy cele" style="text-align:center"><div class="stepTag">💡 THE BIG IDEA</div><div class="baloo" style="font-size:23px;font-weight:800;line-height:1.35;margin:8px 0">“${esc(m.idea)}”</div><div style="font-weight:700">Say it once out loud — ideas you say become yours.</div></div><button class="btn" onclick="mStep(3)">Next — practice game →</button>`;
+  } else if (M.step === 3) {
+    const r = m.rounds[M.round];
+    h += `<div class="card"><div class="stepTag">🎮 PRACTICE GAME</div><h3 style="margin:4px 0">${esc(m.gameTitle)}</h3>`;
+    if (M.gameDone) h += `<div style="font-weight:800;color:var(--green)">You finished the game! 🎉</div>`;
+    else {
+      h += `<div style="font-weight:800;font-size:17px;margin:6px 0">${esc(r.q)}</div><div id="gameMsg" style="font-weight:800;color:#B4710B;min-height:22px"></div>` +
+        r.opts.map((o, oi) => `<button class="opt" id="gOpt${oi}" onclick="gameAnswer(${oi})">${esc(o)}</button>`).join("") +
+        `<div style="font-weight:700;color:var(--soft)">Question ${M.round + 1} of ${m.rounds.length}</div>`;
+    }
+    h += `</div><button class="btn" id="gameNext" onclick="mStep(4)" ${M.gameDone ? "" : "disabled"}>Next — real-world task →</button>`;
+  } else if (M.step === 4) {
+    h += `<div class="card"><div class="stepTag">🏠 REAL-WORLD TASK</div><div style="font-weight:700;font-size:17px;line-height:1.55;margin:6px 0">${esc(m.task)}</div><div style="font-weight:700;color:var(--soft)">Do it in the real world, with Mom or Dad nearby. Then tap:</div><button class="btn ${M.taskDone ? "" : "gold"}" onclick="taskDoneTap()">${M.taskDone ? "✓ We did it!" : "We did it ✓"}</button></div><button class="btn" onclick="mStep(5)" ${M.taskDone ? "" : "disabled"}>Next — jar action →</button>`;
+  } else if (M.step === 5) {
+    h += `<div class="card"><div class="stepTag">🌰 JAR ACTION</div>`;
+    if (m.jar === "count") h += `<div style="font-weight:700;line-height:1.55">Counting Day missions end at the real jar. If your Save total on the tree is different from the real jar, Mom or Dad can fix it in the Parents Dashboard — Jar Ledger.<br><br>Did you count the real jar together?</div>`;
+    else h += `<div style="font-weight:700;line-height:1.55">This mission did not move any money — and that is perfectly fine. Most money wisdom is thinking, not spending.<br><br>If money DID arrive today (a gift, or an earning), Mom or Dad can log it with <b>Jars First!</b> on the home page.</div>`;
+    h += `<button class="btn ${M.jarDone ? "" : "gold"}" onclick="jarActionDone()">${M.jarDone ? "✓ Jar step done" : "Jar step done ✓"}</button></div><button class="btn" onclick="mStep(6)" ${M.jarDone ? "" : "disabled"}>Next — Mom's tick →</button>`;
+  } else if (M.step === 6) {
+    h += `<div class="card"><div class="stepTag">💚 MOM'S TICK</div><div style="font-weight:700;margin-bottom:6px">Mom or Dad — one honest tick (about the doing, never about amounts):</div>
+    <button class="opt ${M.tick === "together" ? "pick" : ""}" onclick="tickPick('together')">🤝 Did it together</button>
+    <button class="opt ${M.tick === "herself" ? "pick" : ""}" onclick="tickPick('herself')">🌟 She did it herself</button></div>
+    <button class="btn" onclick="mStep(7)" ${M.tick ? "" : "disabled"}>Next — tree moment →</button>`;
+  } else if (M.step === 7) {
+    h += `<div class="card green cele" style="text-align:center"><div style="font-size:44px">🌳✨</div><h3 style="margin:4px 0">Tree Moment!</h3><div style="font-weight:700;line-height:1.55">Mission complete, Sreshta — 5 stars grow on your tree ⭐⭐⭐⭐⭐<br>“${esc(m.idea)}”</div></div><button class="btn gold" onclick="finishMission()">Back to my tree →</button>`;
+  }
+  $("#missionBody").innerHTML = h;
+}
+function gameAnswer(oi) {
+  if (!M || M.gameDone) return;
+  const m = MISSIONS[M.ix], r = m.rounds[M.round];
+  if (oi === r.a) {
+    M.round++;
+    if (M.round >= m.rounds.length) { M.gameDone = true; }
+    persistProg(); renderMission();
+  } else {
+    const b = $("#gOpt" + oi); if (b) { b.classList.remove("wig"); void b.offsetWidth; b.classList.add("wig"); }
+    const msg = $("#gameMsg"); if (msg) msg.textContent = "Good thinking — look again, slowly. Gusti believes in you.";
+  }
+}
+function taskDoneTap() { M.taskDone = true; persistProg(); renderMission(); }
+function jarActionDone() { M.jarDone = true; persistProg(); renderMission(); }
+function tickPick(kind) { M.tick = kind; S.ticks[MISSIONS[M.ix].id] = kind; persistProg(); renderMission(); }
+
+/* ================= MY MONEY BOOK + WISH BRANCH ================= */
+function openBook() { renderBook(); show("scr-book"); }
+function wishState(wish) {
+  const added = new Date(wish.added + "T00:00:00"); const now = new Date(); now.setHours(0, 0, 0, 0);
+  const days = Math.round((now - added) / 86400000);
+  return { days, ready: days >= 7 };
+}
+function renderBook() {
+  let h = `<div class="gRow"><div class="gWrap small">${GUSTI_SVG}</div><div class="bubble">Your whole money world, in one book. Jars, goal, wishes and your Orchard.</div></div>`;
+  h += `<div class="card"><h3 style="margin:2px 0">🫙 My Jars</h3><div class="jarRow">
+    <div class="jarCard save"><div class="jn">SAVE</div><div class="jb">${rs(S.jars.save)}</div><div style="font-size:12px;font-weight:800;color:var(--soft)">golden earned: ${rs(S.earnedSave)} • gifted: ${rs(S.giftedSave)}</div></div>
+    <div class="jarCard spend"><div class="jn">SPEND</div><div class="jb">${rs(S.jars.spend)}</div><div style="font-size:12px;font-weight:800;color:var(--soft)">for little joys</div></div>
+    <div class="jarCard share"><div class="jn">SHARE</div><div class="jb">${rs(S.jars.share)}</div><div style="font-size:12px;font-weight:800;color:var(--soft)">for others</div></div></div>`;
+  if (S.rainyTarget > 0) h += `<div style="font-weight:800">🌧️ Rainy-Day Branch: ${rs(S.rainySaved)} of ${rs(S.rainyTarget)} ${S.rainySaved >= S.rainyTarget ? "— full and ready ✓" : ""}</div>`;
+  h += `</div>`;
+  h += `<div class="card goldy"><h3 style="margin:2px 0">🎯 My Goal</h3>`;
+  if (S.goal) h += `<div style="font-weight:800;font-size:17px">${esc(S.goal.name)} — ${rs(S.goal.price)}</div><div style="font-weight:700">Saved so far: ${rs(S.jars.save)} (${goalPct()}%)${goalPct() >= 100 ? "<br>🎉 GOAL DAY is here! Tell Mom or Dad!" : ""}</div>`;
+  else h += `<div style="font-weight:700">No goal yet. Dream one up, and Mom or Dad can set it in the Parents Dashboard.</div>`;
+  h += `</div>`;
+  h += `<div class="card"><h3 style="margin:2px 0">⭐ The Wish Branch</h3><div style="font-weight:700">Wishes wait here for 7 days. If you still want it after a week — it is a True Wish.</div>
+  <input type="text" id="wishText" placeholder="I wish for…" maxlength="60"><button class="btn" onclick="addWish()">Put it on the branch 🌿</button>`;
+  if (!S.wishes.length) h += `<div style="font-weight:700;color:var(--soft)">No wishes resting here right now.</div>`;
+  S.wishes.forEach((wsh, i) => {
+    const st = wishState(wsh);
+    h += `<div class="ledRow"><span>⭐ ${esc(wsh.text)}<br><span style="color:var(--soft);font-size:12px">added ${esc(wsh.added)} • waiting ${st.days} day${st.days === 1 ? "" : "s"}${wsh.trueWish ? " • 💛 TRUE WISH" : ""}</span></span>`;
+    if (st.ready && !wsh.trueWish) h += `<span><button class="fixBtn" onclick="wishDecide(${i},true)">Still want it</button> <button class="fixBtn" onclick="wishDecide(${i},false)">It faded</button></span>`;
+    else if (wsh.trueWish) h += `<span class="goldTag">True Wish</span>`;
+    h += `</div>`;
+  });
+  h += `</div>`;
+  if (S.earnTasks.length) {
+    h += `<div class="card"><h3 style="margin:2px 0">💪 Ways I Can Earn (Mom &amp; Dad's list)</h3>` +
+      S.earnTasks.map(t => `<div class="ledRow"><span>${esc(t.task)}</span><span class="amt">${rs(t.amt)}</span></div>`).join("") + `</div>`;
+  }
+  h += `<div class="card"><h3 style="margin:2px 0">🌳 My Orchard — goals I reached</h3>`;
+  if (!S.orchard.length) h += `<div style="font-weight:700;color:var(--soft)">No trees here yet. Your first Goal Day will plant one.</div>`;
+  S.orchard.forEach(o => { h += `<div class="ledRow"><span>🌳 ${esc(o.name)}</span><span class="amt">${rs(o.price)} • ${esc(o.date)}</span></div>`; });
+  h += `</div>`;
+  $("#bookBody").innerHTML = h;
+}
+function addWish() {
+  const t = ($("#wishText").value || "").trim();
+  if (!t) return;
+  if (S.wishes.length >= 5) { alert("Your branch holds 5 wishes at a time — let one fade or come true first."); return; }
+  S.wishes.push({ text: t, added: todayISO(), trueWish: false }); save(); renderBook();
+}
+function wishDecide(i, keep) {
+  if (keep) { S.wishes[i].trueWish = true; save(); renderBook(); }
+  else { S.wishes.splice(i, 1); save(); renderBook(); }
+}
+/* ================= DASHBOARD ================= */
+let dashSel = "ov", depTag = "Gifted", fixTarget = "", twok = null, resetArmed = false, bonusMsg = "", countMsg = "";
+function dashGo(name) {
+  dashSel = name;
+  ["ov", "ledger", "goal", "ctrl"].forEach(k => { const el = $("#dash-" + k); if (el) el.classList.toggle("hidden", k !== name); });
+  $$("#scr-dash .dashNav button").forEach(b => b.classList.toggle("sel", b.getAttribute("data-d") === name));
+}
+function monthDeposits() {
+  return S.ledger.filter(e => e.date.slice(0, 7) === monthKey() && e.amt > 0 && ["deposit", "treasure", "bonus"].includes(e.kind)).reduce((a, e) => a + e.amt, 0);
+}
+function renderDash() {
+  /* ----- Overview ----- */
+  const fest = festivalSoon();
+  const trueWishes = S.wishes.filter(x => x.trueWish);
+  $("#dash-ov").innerHTML = `<div class="grid3">
+    <div class="stat"><div class="n">${rs(S.jars.save)}</div><div class="l">SAVE JAR</div></div>
+    <div class="stat"><div class="n">${S.goal ? goalPct() + "%" : "—"}</div><div class="l">GOAL PROGRESS</div></div>
+    <div class="stat"><div class="n">${rs(monthDeposits())}</div><div class="l">ADDED THIS MONTH</div></div>
+    <div class="stat"><div class="n">${rs(S.earnedSave)} : ${rs(S.giftedSave)}</div><div class="l">EARNED : GIFTED (IN SAVE)</div></div>
+    <div class="stat"><div class="n">${S.leaves} 🌿</div><div class="l">COUNTING LEAVES</div></div>
+    <div class="stat"><div class="n">${S.rainyTarget > 0 ? rs(S.rainySaved) + "/" + rs(S.rainyTarget) : "not set"}</div><div class="l">RAINY-DAY BRANCH</div></div>
+  </div>
+  <div class="card"><h3 style="margin:2px 0">🌳 Tree state</h3><div style="font-weight:700;line-height:1.55">
+  ${S.goal ? `Goal: <b>${esc(S.goal.name)}</b> — ${rs(S.jars.save)} of ${rs(S.goal.price)}${goalPct() >= 100 ? " — <b>GOAL DAY is here!</b> Confirm it in Goal Manager." : ""}` : "No goal set yet — Goal Manager is the place."}<br>
+  Stars: ${S.stars} • Missions done: ${S.done.length}/10 • Orchard trees: ${S.orchard.length}<br>
+  ${fest ? `Next money moment: <b>${esc(fest.name)}</b>${fest.diff === 0 ? " (today!)" : " in " + fest.diff + " day" + (fest.diff > 1 ? "s" : "")} — jars first!` : "No festival in the next two weeks."}
+  ${trueWishes.length ? `<br>💛 True Wishes: ${trueWishes.map(x => esc(x.text)).join(", ")}` : ""}</div>
+  <button class="btn" onclick="countingDay()">🌿 Counting Day done (weekly jar count)</button><div id="countMsg" style="font-weight:800;color:var(--green)">${esc(countMsg)}</div>
+  <button class="btn gold" onclick="giveBonus()">🌱 Give this month's Tree Bonus${S.bonus.on ? "" : " (off — turn it on in Controls)"}</button><div id="bonusMsg" style="font-weight:800;color:var(--green)">${esc(bonusMsg)}</div></div>
+  ${S.baseline ? `<div class="card goldy"><h3 style="margin:2px 0">🏆 Day 1 baseline — locked in gold</h3><div style="font-weight:700;line-height:1.55">Jars: ${S.baseline.choice === "new" ? "set up new on Day 1" : "already had jars"}${S.baseline.note ? " — “" + esc(S.baseline.note) + "”" : ""}<br>Treasure: ${rs(S.baseline.treasure)} • What Things Cost — sensible picks: ${S.baseline.b3.map((v, i) => (v === B3[i].a ? "✓" : "·")).join(" ")} (${S.baseline.b3.filter((v, i) => v === B3[i].a).length}/6)<br>${B3.map((q, i) => `${i + 1}. ${esc(q.q)} She picked <b>${esc(q.opts[S.baseline.b3[i]])}</b> • sensible: ${esc(q.opts[q.a])}`).join("<br>")}</div></div>` : `<div class="card"><b>Day 1 baseline not done yet.</b> It starts from her home page.</div>`}`;
+  /* ----- Ledger ----- */
+  const p = splitAmount(Math.max(0, parseInt((($("#depAmt") || {}).value || "0"), 10) || 0), S.split);
+  $("#dash-ledger").innerHTML = `<div class="card"><div class="stepTag">🌰 JARS FIRST — MONEY ARRIVED</div>
+    <div style="font-weight:700">Amount she received (whole rupees):</div>
+    <input type="number" id="depAmt" min="1" step="1" placeholder="e.g. 200" value="${esc((($("#depAmt") || {}).value || ""))}" oninput="depPreviewUpdate()">
+    <div style="font-weight:700;margin-top:4px">Was it earned or gifted?</div>
+    <div class="revRow"><button class="${depTag === "Earned" ? "sel" : ""}" onclick="depTagSet('Earned')">💪 Earned</button><button class="${depTag === "Gifted" ? "sel" : ""}" onclick="depTagSet('Gifted')">🎁 Gifted</button></div>
+    <div id="depPreview"><div class="jarRow"><div class="jarCard save"><div class="jn">SAVE ${S.split.save}%</div><div class="jb">${rs(p.save)}</div></div><div class="jarCard spend"><div class="jn">SPEND ${S.split.spend}%</div><div class="jb">${rs(p.spend)}</div></div><div class="jarCard share"><div class="jn">SHARE ${S.split.share}%</div><div class="jb">${rs(p.share)}</div></div></div></div>
+    <button class="btn" onclick="depositConfirm()">Put it in the jars ✓</button><div id="depMsg" style="font-weight:800;color:var(--green)"></div></div>
+  <div class="card"><div class="stepTag">🧁 RECORD SPENDING (SPEND JAR)</div>
+    <input type="number" id="spAmt" min="1" step="1" placeholder="Amount spent"><input type="text" id="spNote" placeholder="Spent on (e.g. ice cream)"><button class="btn ghost" onclick="recordSpend()">Record spending</button>
+    <div class="stepTag" style="margin-top:10px">💝 RECORD SHARING (SHARE JAR)</div>
+    <input type="number" id="shAmt" min="1" step="1" placeholder="Amount shared"><input type="text" id="shNote" placeholder="Shared for (e.g. friend's gift)"><button class="btn ghost" onclick="recordShare()">Record sharing</button>
+    <div id="recMsg" style="font-weight:800;color:var(--green)"></div></div>
+  <div class="card"><div class="stepTag">🔑 TAKE FROM SAVE (TWO-KEY)</div>
+    <div style="font-weight:700">Save money leaves only with the Parents PIN — and it is always written here.</div>
+    <input type="number" id="wdAmt" min="1" step="1" placeholder="Amount">
+    <select id="wdReason"><option>Rainy-Day Moment</option><option>Other</option></select>
+    <input type="text" id="wdNote" placeholder="Note (optional)">
+    <button class="btn ghost" onclick="openTwoKey('withdraw')">Continue — PIN needed →</button></div>
+  <div id="fixBox"></div>
+  <h3 style="color:var(--green);margin:12px 0 4px">Jar Ledger (newest first)</h3>
+  ${S.ledger.length ? S.ledger.slice().reverse().map(e => `<div class="ledRow"><span>${esc(e.date)} • <b>${esc(e.jar.toUpperCase())}</b> • ${esc(e.kind)}${e.tag ? " • " + esc(e.tag) : ""}${e.note ? "<br><span style='color:var(--soft)'>" + esc(e.note) + "</span>" : ""}</span><span><span class="amt" style="color:${e.amt >= 0 ? "var(--green)" : "#B4552D"}">${e.amt >= 0 ? "+" : "−"}${rs(Math.abs(e.amt))}</span><br><button class="fixBtn" onclick="fixEntry('${e.id}')">Fix</button></span></div>`).join("") : `<div style="font-weight:700;color:var(--soft)">No entries yet. Her treasure and deposits will live here.</div>`}`;
+  if (fixTarget) renderFixBox();
+  /* ----- Goal Manager ----- */
+  $("#dash-goal").innerHTML = `<div class="card"><div class="stepTag">🎯 GOAL MANAGER</div>
+  ${S.goal ? `<div style="font-weight:700;line-height:1.55">Current goal: <b>${esc(S.goal.name)}</b> — ${rs(S.goal.price)}<br>Progress: ${rs(S.jars.save)} saved (${goalPct()}%)</div>
+  ${goalPct() >= 100 ? `<div class="card goldy cele" style="margin:8px 0"><b>🎉 GOAL DAY is here!</b> She saved it all. Confirm Goal Day — the price leaves Save with the Two-Key rule, and the goal becomes a tree in her Orchard.<br><button class="btn gold" onclick="openTwoKey('goalday')">Confirm Goal Day 🌳</button></div>` : ""}` : `<div style="font-weight:700">No goal set. Rung 1 guidance: keep it small — reachable in about 2–3 weeks (roughly ₹100–₹300) — so she tastes success fast.</div>`}
+  <input type="text" id="goalName" placeholder="Goal name (e.g. Story book)" value="${S.goal ? esc(S.goal.name) : ""}">
+  <input type="number" id="goalPrice" min="1" step="1" placeholder="Price in ₹" value="${S.goal ? S.goal.price : ""}">
+  <button class="btn" onclick="saveGoal()">Save the goal ✓</button><div id="goalMsg" style="font-weight:800;color:var(--green)"></div></div>
+  <div class="card"><div class="stepTag">🌧️ RAINY-DAY BRANCH</div>
+  <div style="font-weight:700">Target for surprises (₹):</div><input type="number" id="rainyTarget" min="0" step="1" value="${S.rainyTarget || ""}" placeholder="e.g. 100">
+  <div style="font-weight:700">Keep this much of Save aside for rainy days (₹):</div><input type="number" id="rainyAmt" min="0" step="1" value="${S.rainySaved || ""}" placeholder="e.g. 50">
+  <button class="btn ghost" onclick="saveRainy()">Save rainy-day settings</button><div id="rainyMsg" style="font-weight:800;color:var(--green)"></div></div>
+  <div class="card"><h3 style="margin:2px 0">🌳 The Orchard</h3>${S.orchard.length ? S.orchard.map(o => `<div class="ledRow"><span>🌳 ${esc(o.name)}</span><span class="amt">${rs(o.price)} • ${esc(o.date)}</span></div>`).join("") : `<div style="font-weight:700;color:var(--soft)">Empty for now — the first Goal Day plants the first tree.</div>`}</div>`;
+  /* ----- Controls ----- */
+  $("#dash-ctrl").innerHTML = `<div class="card"><div class="stepTag">⚖️ JAR SPLIT (FUTURE MONEY ONLY)</div>
+  <div style="font-weight:700">Must add up to 100. Save / Spend / Share (%)</div>
+  <div style="display:flex;gap:6px"><input type="number" id="spSave" value="${S.split.save}"><input type="number" id="spSpend" value="${S.split.spend}"><input type="number" id="spShare" value="${S.split.share}"></div>
+  <button class="btn ghost" onclick="saveSplit()">Save the split</button><div id="splitMsg" style="font-weight:800;color:var(--green)"></div></div>
+  <div class="card"><div class="stepTag">🌱 TREE BONUS (HER INTEREST)</div>
+  <div style="font-weight:700">Tree Bonus is ${S.bonus.on ? "ON" : "OFF"} — rate ₹${S.bonus.rate} per ₹100 in Save, once a month, only when you tap it in Overview.</div>
+  <button class="btn ghost" onclick="bonusToggle()">${S.bonus.on ? "Turn Tree Bonus OFF" : "Turn Tree Bonus ON"}</button>
+  <input type="number" id="bonusRate" min="0" step="1" value="${S.bonus.rate}"><button class="btn ghost" onclick="saveBonusRate()">Save the rate</button></div>
+  <div class="card"><div class="stepTag">💪 EARN TASKS (PARENTS SET THESE)</div>
+  <div id="etList">${S.earnTasks.map((t, i) => `<div class="ledRow"><span>${esc(t.task)}</span><span><span class="amt">${rs(t.amt)}</span> <button class="fixBtn" onclick="delEarnTask(${i})">Remove</button></span></div>`).join("") || `<div style="font-weight:700;color:var(--soft)">No earn tasks yet.</div>`}</div>
+  <input type="text" id="etTask" placeholder="Task (e.g. Water the plants)"><input type="number" id="etAmt" min="1" step="1" placeholder="Earns ₹"><button class="btn ghost" onclick="addEarnTask()">Add earn task</button></div>
+  <div class="card"><div class="stepTag">🎁 NEXT REWARD</div>
+  <input type="text" id="rewardInput" placeholder="e.g. A library visit together" value="${esc(S.nextReward)}"><button class="btn ghost" onclick="saveReward()">Save reward</button></div>
+  <div class="card"><div class="stepTag">↺ RESET</div>
+  <div style="font-weight:700">Reset clears missions, stars, jars and the ledger. Day 1 baseline and the Orchard stay safe, always.</div>
+  <button class="btn ghost" id="resetBtn" onclick="resetTap()">${resetArmed ? "Tap again to clear progress + ledger (baseline & Orchard stay)" : "Reset Money Tree…"}</button><div id="resetMsg" style="font-weight:800;color:var(--green)"></div></div>`;
+  dashGo(dashSel);
+}
+function depTagSet(t) { depTag = t; renderDash(); }
+function depPreviewUpdate() {
+  const box = $("#depPreview"); if (!box) return;
+  const v = parseInt(($("#depAmt") || {}).value, 10);
+  const p = splitAmount(!v || v < 0 ? 0 : v, S.split);
+  box.innerHTML = `<div class="jarRow"><div class="jarCard save"><div class="jn">SAVE ${S.split.save}%</div><div class="jb">${rs(p.save)}</div></div><div class="jarCard spend"><div class="jn">SPEND ${S.split.spend}%</div><div class="jb">${rs(p.spend)}</div></div><div class="jarCard share"><div class="jn">SHARE ${S.split.share}%</div><div class="jb">${rs(p.share)}</div></div></div>`;
+}
+function msg(id, txt) { const el = $(id); if (el) el.textContent = txt; }
+function depositConfirm() {
+  const v = parseInt(($("#depAmt") || {}).value, 10);
+  if (!v || v <= 0) { msg("#depMsg", "Type the amount she received first — whole rupees, more than zero."); return; }
+  applySplit(v, "deposit", depTag, depTag === "Earned" ? "Earned money, jars first" : "Gift money, jars first");
+  save(); renderDash(); msg("#depMsg", "Done! " + rs(v) + " split into the jars (" + depTag + "). The tree grew. 🌳");
+}
+function recordSpend() {
+  const v = parseInt(($("#spAmt") || {}).value, 10), note = (($("#spNote") || {}).value || "").trim();
+  if (!v || v <= 0) { msg("#recMsg", "Type a spending amount first."); return; }
+  if (v > S.jars.spend) { msg("#recMsg", "That is more than the Spend jar holds (" + rs(S.jars.spend) + "). Nothing was taken."); return; }
+  S.jars.spend -= v; addLedger("spend", -v, "spend", "", note || "Spent from Spend jar"); save(); renderDash(); msg("#recMsg", "Recorded — spent " + rs(v) + " from the Spend jar. Joy is part of the plan. 🧁");
+}
+function recordShare() {
+  const v = parseInt(($("#shAmt") || {}).value, 10), note = (($("#shNote") || {}).value || "").trim();
+  if (!v || v <= 0) { msg("#recMsg", "Type a sharing amount first."); return; }
+  if (v > S.jars.share) { msg("#recMsg", "That is more than the Share jar holds (" + rs(S.jars.share) + "). Nothing was taken."); return; }
+  S.jars.share -= v; addLedger("share", -v, "share", "", note || "Shared from Share jar"); save(); renderDash(); msg("#recMsg", "Recorded — shared " + rs(v) + " from the Share jar. A giving heart grows here. 💝");
+}
+function renderFixBox() {
+  const e = S.ledger.find(x => x.id === fixTarget);
+  if (!e) { fixTarget = ""; return; }
+  $("#fixBox").innerHTML = `<div class="card goldy"><div class="stepTag">✏️ FIX AN ENTRY</div>
+  <div style="font-weight:700">Entry: ${esc(e.date)} • ${esc(e.jar)} • ${esc(e.kind)} • ${e.amt >= 0 ? "+" : "−"}${rs(Math.abs(e.amt))}${e.note ? " — " + esc(e.note) : ""}<br>Type the amount it SHOULD have been (a positive number). A correcting entry is added — history is never quietly rewritten.</div>
+  <input type="number" id="fixAmt" min="0" step="1" placeholder="Correct amount in ₹"><button class="btn" onclick="applyFix()">Add the correcting entry</button>
+  <button class="btn ghost" onclick="fixCancel()">Cancel</button><div id="fixMsg" style="font-weight:800;color:#B4552D"></div></div>`;
+}
+function fixEntry(id) { fixTarget = id; renderDash(); dashGo("ledger"); const b = $("#fixBox"); if (b && b.scrollIntoView) b.scrollIntoView(); }
+function fixCancel() { fixTarget = ""; renderDash(); }
+function applyFix() {
+  const e = S.ledger.find(x => x.id === fixTarget);
+  if (!e) return;
+  const v = parseInt(($("#fixAmt") || {}).value, 10);
+  if (isNaN(v) || v < 0) { msg("#fixMsg", "Type the correct amount (zero or more)."); return; }
+  const signed = (e.amt < 0 ? -1 : 1) * v;
+  const delta = signed - e.amt;
+  if (delta === 0) { msg("#fixMsg", "That is the same amount — nothing to fix."); return; }
+  if (S.jars[e.jar] + delta < 0) { msg("#fixMsg", "That fix would make the " + e.jar + " jar less than zero — not applied."); return; }
+  S.jars[e.jar] += delta;
+  if (e.jar === "save") {
+    if (delta > 0) { if (e.tag === "Earned") S.earnedSave += delta; else S.giftedSave += delta; }
+    else { let d = -delta; const g = Math.min(S.giftedSave, d); S.giftedSave -= g; d -= g; S.earnedSave = Math.max(0, S.earnedSave - d); }
+    S.rainySaved = Math.min(S.rainySaved, S.jars.save);
+  }
+  addLedger(e.jar, delta, "fix", e.tag, "Fix for the " + e.date + " " + e.kind + " entry");
+  e.fixed = true; fixTarget = ""; save(); renderDash();
+}
+function openTwoKey(purpose) {
+  if (purpose === "goalday") {
+    if (!S.goal) return;
+    twok = { purpose, amount: S.goal.price, reason: "Goal Day", note: S.goal.name };
+  } else {
+    const v = parseInt(($("#wdAmt") || {}).value, 10);
+    if (!v || v <= 0) { alert("Type the amount to take from Save first."); return; }
+    twok = { purpose: "withdraw", amount: v, reason: $("#wdReason").value, note: ($("#wdNote").value || "").trim() };
+  }
+  $("#twokBox").innerHTML = `<div class="card goldy cele"><div class="stepTag">🔑 TWO-KEY — PARENTS PIN NEEDED</div>
+  <div style="font-weight:700;line-height:1.55">Taking <b>${rs(twok.amount)}</b> from the SAVE jar.<br>Reason: ${esc(twok.reason)}${twok.note ? " — " + esc(twok.note) : ""}<br>Type the Parents PIN to confirm:</div>
+  <input type="password" id="twokPin" inputmode="numeric" maxlength="4" placeholder="••••" style="max-width:160px">
+  <button class="btn gold" onclick="twoKeyConfirm()">Confirm with PIN ✓</button>
+  <button class="btn ghost" onclick="twoKeyCancel()">Cancel</button>
+  <div id="twokMsg" style="font-weight:800;color:#B4552D"></div></div>`;
+  const b = $("#twokBox"); if (b && b.scrollIntoView) b.scrollIntoView();
+}
+function twoKeyCancel() { twok = null; $("#twokBox").innerHTML = ""; }
+function twoKeyConfirm() {
+  if (!twok) return;
+  const pin = (($("#twokPin") || {}).value || "");
+  if (pin !== "2208") { msg("#twokMsg", "That PIN did not match — nothing was taken."); return; }
+  if (twok.amount > S.jars.save) { msg("#twokMsg", "Save holds only " + rs(S.jars.save) + " — nothing was taken."); return; }
+  S.jars.save -= twok.amount;
+  let d = twok.amount; const g = Math.min(S.giftedSave, d); S.giftedSave -= g; d -= g; S.earnedSave = Math.max(0, S.earnedSave - d);
+  S.rainySaved = Math.min(S.rainySaved, S.jars.save);
+  addLedger("save", -twok.amount, "withdrawal", "", twok.reason + (twok.note ? " — " + twok.note : ""));
+  if (twok.purpose === "goalday" && S.goal) {
+    S.orchard.push({ name: S.goal.name, price: S.goal.price, date: todayISO() });
+    S.goal = null;
+  }
+  twok = null; $("#twokBox").innerHTML = ""; save(); renderDash();
+}
+function saveGoal() {
+  const name = (($("#goalName") || {}).value || "").trim();
+  const price = parseInt(($("#goalPrice") || {}).value, 10);
+  if (!name) { msg("#goalMsg", "Give the goal a name first."); return; }
+  if (!price || price <= 0) { msg("#goalMsg", "Type the goal's real price (whole rupees)."); return; }
+  S.goal = { name, price }; save(); renderDash(); msg("#goalMsg", "Goal saved — the fruit is on the tree! 🎯");
+}
+function saveRainy() {
+  const t = parseInt(($("#rainyTarget") || {}).value, 10);
+  const a = parseInt(($("#rainyAmt") || {}).value, 10);
+  S.rainyTarget = isNaN(t) ? 0 : Math.max(0, t);
+  S.rainySaved = Math.min(isNaN(a) ? 0 : Math.max(0, a), S.jars.save);
+  save(); renderDash(); msg("#rainyMsg", "Rainy-day settings saved. 🌧️");
+}
+function saveSplit() {
+  const a = parseInt(($("#spSave") || {}).value, 10), b = parseInt(($("#spSpend") || {}).value, 10), c = parseInt(($("#spShare") || {}).value, 10);
+  if ([a, b, c].some(x => isNaN(x) || x < 0) || a + b + c !== 100) { msg("#splitMsg", "The three numbers must be zero or more and add up to exactly 100."); return; }
+  S.split = { save: a, spend: b, share: c }; save(); renderDash(); msg("#splitMsg", "Split saved — it applies to future money only. ⚖️");
+}
+function bonusToggle() { S.bonus.on = !S.bonus.on; save(); renderDash(); }
+function saveBonusRate() { const v = parseInt(($("#bonusRate") || {}).value, 10); S.bonus.rate = isNaN(v) ? 0 : Math.max(0, v); save(); renderDash(); }
+function giveBonus() {
+  if (!S.bonus.on) { bonusMsg = "Tree Bonus is off — turn it on in Controls first."; renderDash(); return; }
+  if (S.bonus.lastMonth === monthKey()) { bonusMsg = "This month's Tree Bonus is already given. The tree grows again next month. 🌱"; renderDash(); return; }
+  const amt = Math.floor(S.jars.save * S.bonus.rate / 100);
+  if (amt <= 0) { bonusMsg = "The Tree Bonus is ₹0 right now (Save × rate). Nothing added."; renderDash(); return; }
+  S.jars.save += amt; addLedger("save", amt, "bonus", "", "Tree Bonus — the tree grew a little by itself");
+  S.bonus.lastMonth = monthKey(); bonusMsg = "Tree Bonus given: " + rs(amt) + " grew into the Save jar. 🌱"; save(); renderDash();
+}
+function countingDay() {
+  if (S.lastCountDay === todayISO()) { countMsg = "Counting Day is already leafed for today. 🌿"; renderDash(); return; }
+  S.leaves++; S.lastCountDay = todayISO(); countMsg = "Leaf added! " + S.leaves + " leaves on the tree. 🌿"; save(); renderDash();
+}
+function addEarnTask() {
+  const t = (($("#etTask") || {}).value || "").trim(); const a = parseInt(($("#etAmt") || {}).value, 10);
+  if (!t || !a || a <= 0) return;
+  S.earnTasks.push({ task: t, amt: a }); save(); renderDash(); dashGo("ctrl");
+}
+function delEarnTask(i) { S.earnTasks.splice(i, 1); save(); renderDash(); dashGo("ctrl"); }
+function saveReward() { S.nextReward = (($("#rewardInput") || {}).value || "").trim(); save(); renderDash(); dashGo("ctrl"); }
+function resetTap() {
+  if (!resetArmed) { resetArmed = true; renderDash(); dashGo("ctrl"); return; }
+  const keep = { baseline: S.baseline, orchard: S.orchard };
+  S = freshState(); S.baseline = keep.baseline; S.orchard = keep.orchard;
+  baseDraft = { choice: "", note: "", b3: [] }; BSTEP = "b1"; resetArmed = false; M = null;
+  save(); renderDash(); dashGo("ctrl"); msg("#resetMsg", "All fresh! Day 1 baseline and the Orchard are still safe. 🌳");
+}
+
+/* ================= INIT ================= */
+window.MISSIONS = MISSIONS; window.B3 = B3; window.FESTIVALS = FESTIVALS;
+Object.defineProperty(window, "S", { configurable: true, get: () => S, set: (v) => { S = v; } });
+Object.defineProperty(window, "M", { configurable: true, get: () => M, set: (v) => { M = v; } });
+Object.defineProperty(window, "baseDraft", { configurable: true, get: () => baseDraft, set: (v) => { baseDraft = v; } });
+$("#accessGusti").innerHTML = GUSTI_SVG;
+renderHome();
+show("scr-access");
+</script>
+</body>
+</html>
